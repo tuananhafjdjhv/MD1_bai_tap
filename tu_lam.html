@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <style>
+
+    </style>
+</head>
+
+<canvas width="900px" height="510px" id="gamezone"></canvas>
+<p id="score"> Score:0</p>
+<script>
+    let canvas = document.getElementById('gamezone');
+    let context = canvas.getContext('2d');
+    let scoreshow = document.getElementById('score');
+
+    let birdimg = new Image();
+    let hinhnenchinh = new Image();
+    let ongtren = new Image();
+    let ongduoi = new Image();
+
+    birdimg.src = "https://raw.githubusercontent.com/khanhdzx/Du_An_game/master/images/bird.png";
+    hinhnenchinh.src = "https://raw.githubusercontent.com/khanhdzx/Du_An_game/master/images/nenchinh.png";
+    ongduoi.src = "https://raw.githubusercontent.com/khanhdzx/Du_An_game/master/images/ongtren.png";
+    ongtren.src = "https://raw.githubusercontent.com/khanhdzx/Du_An_game/master/images/ongduoi.png";
+
+    let score = 0;
+    let khoangcachhaiong = 140;
+    let khoangcachdenongduoi;
+    let bird = {
+        x: 0,
+        y: 0
+    }
+    let ong = []
+    ong[0] = {
+        x: canvas.width,
+        y: 0
+    }
+    let gravity = 1.5;
+ let a = 0; // a + gravity = c 1.5 3 4.5
+
+
+    function run() {
+        context.drawImage(hinhnenchinh, 0, 0);
+        context.drawImage(birdimg, bird.x, bird.y)
+        for (let i = 0; i < ong.length; i++) {
+            khoangcachdenongduoi = ongtren.height + khoangcachhaiong;
+            context.drawImage(ongtren, ong[i].x, ong[i].y);
+            context.drawImage(ongduoi, ong[i].x, ong[i].y);
+            context.drawImage(ongduoi, ong[i].x, ong[i].y + khoangcachdenongduoi)
+            ong[i].x -= 5
+            if (ong[i].x == canvas.width / 2) {
+                ong.push({
+                    x: canvas.width,
+                    y: Math.floor(Math.random() * ongtren.height) - ongtren.height,
+                })
+            }
+            // if (ong[i].x === 0) {
+            //     ong.splice(0, 1);
+            //     score++}
+
+            if (ong[i].x == 0) ong.splice(0, 1)
+            if (ong[i].x == bird.x) score++
+            // if (bird.y + birdimg.height == canvas.height
+            //     || bird.x + birdimg.width >= ong[i].x
+            //     && bird.x <= ong[i].x + ongtren.width
+            //     && bird.y <= ong[i].y + ongtren.height
+            //     || bird.y + birdimg.height >= ong[i].y + khoangcachdenongduoi) {
+            //     return;
+            // }
+
+            if (bird.y + birdimg.height == canvas.height
+                || bird.x + birdimg.width >= ong[i].x
+                && bird.x <= ong[i].x + ongtren.width
+                && bird.y <= ong[i].y + ongtren.height
+                || bird.y + birdimg.height >= ong[i].x + khoangcachdenongduoi) {
+                bird.y = canvas.height - birdimg.height;
+                    return;
+            } else {
+                bird.y += 2
+            }
+        }
+        scoreshow.innerHTML = "score:" + score
+
+        requestAnimationFrame(run);
+
+    }
+
+
+    document.addEventListener("keydown", function (abc) {
+        if (abc.keyCode == 8) {
+            return;
+        }
+        bird.y -= 50;
+    })
+    run();
+
+</script>
+</body>
+
+</html>

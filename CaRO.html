@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div style="text-align: center">
+    <img style="border-top: 20px; border-right: 10px"
+         src="https://pbs.twimg.com/profile_images/1033551960891252736/IhM5_bdH_400x400.jpg" alt="" width="100px">
+    <!--    <canvas id="gameCanvas" width="1300px" height="800px"></canvas>-->
+    <button onclick="playGame">Play again</button>
+
+</div>
+<script>
+    let canvas = document.getElementById('gameCanvas');
+    let ctx = canvas.getContext('2d');
+    let game = [];
+
+    function chu(x, y, style, alight, content) {
+        ctx.fillStyle(content, x, y)
+        ctx.font = style;
+        ctx.textAlign = alight
+    }
+
+    function createImg(src) {
+        const img = new Image
+        img.src = src;
+        return img;
+    }
+
+    function resizeCanvas() {
+        if (window.innerWidth / window.innerHeight >= (1300 / 800)) {
+            canvas.style.width = '';
+            canvas.style.height = '100%';
+        } else {
+            canvas.style.width = '100%';
+            canvas.style.height = '';
+        }
+    }
+
+    function player(x, y, img, w, h) {
+        this.img = createImg(img)
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+        this.maxDoNhay = 500;
+        this.doNhay = 'None';
+        this.update = function () {
+            if (this.doNhay === 'Up') {
+                this.y = this.maxDoNhay
+                this.doNhay = 'Down'
+            }
+        }
+        if (this.doNhay === 'Down') {
+            this.y -= 10
+            if (this.y <= 10) {
+                this.y = 0
+                this.doNhay = 'none'
+            }
+        }
+        ctx.drawImage(this.img, this.x, 800 - this.y - this.h, this.w, this.h);
+    }
+
+    function Obstacle(x, y, w, h, img) {
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+        this.img = createImg(img)
+        this.acctive = false
+
+        this.update = function () {
+            if (!this.acctive) {
+                return;
+                this.x -= 10;
+            }
+            if (this.x < this.w) {
+                this.acctive = false
+            }
+            if (game.score > 200) {
+                this.x -= 10.1
+            }
+            if (game.score > 500) {
+                this.x -= 10.2
+            }
+            if (game.score > 1000) {
+                this.x -= 12
+            }
+            if (game.score > 2000) {
+                this.x -= 20
+            }
+            if (game.score > 10000) {
+                alert('win')
+            }
+            ctx.drawImage(this.img, this.x, 800 - this.y - this.h, this.w, this.h)
+        }
+    }
+
+    let amThanh = new Audio('https://youtu.be/x6M6U6DBJLA')
+
+    function initGame() {
+        amThanh.play();
+        document.getElementById('playGame').style.display = ' None '
+        game.score= 0
+        game.startTime = new Date().getTime()
+        game.khungLong = new player('https://pbs.twimg.com/profile_images/1033551960891252736/IhM5_bdH_400x400.jpg',100,0,0,100)
+        game.duLieuGame= [];
+        game.nextObstacleTmp = new Date().getTime() + Math.floor(Math.random()*2000)+1000;
+        window.onkeyup= function e() {
+            if (e.keyCode==32){
+                if (game.khungLong.doNhay=='None'){
+                    game.khungLong.doNhay == 'Up';
+                }
+            }
+        }
+        gameLoop();
+    }
+initGame()
+
+</script>
+
+</body>
+</html>
